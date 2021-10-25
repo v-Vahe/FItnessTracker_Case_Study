@@ -1,0 +1,741 @@
+---
+title: "Analysis of Health Tracker For BellaBeat Marketing"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Summary
+
+In this case study I will analyze data from FitBit users, which is a personal health tracker. The objective is to gain insights from FitBit secondary data, to drive business decisions for another health tracker company called BellaBeat. This data analysis can help guide Bellabeat's marketing strategies particularly for two of their products Leaf (tracker braclet) and Time (wellness watch). The main feature of these products is traking and measuring user wellness activities by connecting to Bellabeat app. Then the app provides users with insights into their daily wellness, using attributes such as sleep, stress, calories burnt, menstrual cycle, and mindfulness habits. 
+
+<!-- The data and some instructions were provided by Google Data Analytics, which is a course developed by Goole on Cursera. Here we will only use deliverables and guiding questions from that as though they were given to us by the marketing team in Bellabeat. -->
+
+The datasets are not perfect and have some limitations. The purpose is not to pass over these limitations and make it seem like the analysis is perfectlyn accurate, but rather to face these limitaitons and discuss some possible ways to overcome them. These limitaitons commonly occure in many other datasets in practice. Hence it will be useful to discuss them in a thorough manner. 
+
+So, we already developed a business task, which is, esentially, to provide BellaBeat with recommendations for their marketing strategy. To reach that goal, the main aproach used in this case study is to follow these steps: first to develope a scenario, then understand what the stakeholders would be interested in (deliverables), pre-determine some guiding questions the answers for which can lead to the desired recomendations for the marketing team; and, finaly, proceed with the data analysis processes (Data Preparation, Data Cleaning and Processing, Analyze and Visualize).
+
+#### Deliverables
+
+1. A clear summary of the business task
+2. A description of all data sources used
+3. Documentation of any cleaning or manipulation of data
+4. A summary of your analysis
+5. Supporting visualizations and key findings
+6. Your top high-level content recommendations based on your analysis
+
+#### Some questions to address
+
+1. What are some trends in smart device usage?
+2. How could these trends apply to Bellabeat customers?
+3. How could these trends help influence Bellabeat marketing strategy?
+
+#### How to read the write up and the code effectively
+
+<<<<
+This case study is devided into sections and subsections. Following the summary each section can be seen as a data analysis phraze comonly implimeted in a real world. The such as prepare and process data. The sections will include key findings within each phrase and before each output the corresponding R script can be found. 
+
+The analysis was performed using R, since some of the files included too many rows and R is known for handling many rows efficiently. The code outputs will be displayed, but the code itself is hidden and it can be expanded if needed (click on hide button). On top of reading the script chunk by chunk, one can find the whole script at the end of this document (the order of the code execution is same both in chunks and the ////. The script used for this case study is provided at the end of this document . The variables and outputs in each chunk of code also depends on the computations in the previous chunks. <<<<
+
+# Data Preparation
+
+In this step, we need to prepare data for processing and analyzing. We will need to take a close look at the datasets, summarize them and descover some data quality characteristics. To do so, we need to examine each dataset closly. Originaly there where 18 available datasets that were obtained from Kaggle(XXXX add link). Of the 18 original datasets only 12 were used, since some columns repeated across the datasets and some of them did not fit into the context of this case study problems.
+
+#### Data Summary:
+
+<!-- They are comprised of 33 unique users, some of them even less. The user data was tracked from 4/12/2016 to 5/12/2016 (over 31 days).  -->
+
+Bellow I created metadata of the datasets that encompasses some of the important data quality characteristics:
+
+```{r, echo = FALSE, warning = FALSE, include=FALSE,  message=FALSE}
+# Load Packages and Datasets------------------------------------------
+
+# install.packages('tidyverse')
+# install.packages('lubridate')
+# install.packages('chron')
+# install.packages('GGally') 
+# install.packages("ggfortify")
+library(dplyr)
+library(grid)
+library(gridExtra)
+library(chron)
+library(lubridate)
+library(readr)
+library(tidyverse)
+library(printr)
+library(knitr)
+library(hms)
+library(kableExtra)
+library(reshape2)
+library(GGally)
+library(ggfortify)
+```
+
+```{r, echo = FALSE, warning = FALSE, cache=TRUE}
+# save the filenames
+files = list.files('Fitabase_4.12.16-5.12.16',pattern="*.csv")
+
+# load the datasets
+for (i in 1:length(files)) {
+  assign(gsub("\\..*","",files)[i], read_csv(paste('./Fitabase_4.12.16-5.12.16/',files[i],sep = '')))
+}
+
+# Dataset Summaries  ------------------------------------------
+
+# dataframes into a list (same order as files)
+DataFrames <- list(
+    dailyActivity_merged,     
+    heartrate_seconds_merged,   
+    hourlyCalories_merged,      
+    hourlyIntensities_merged,  
+    hourlySteps_merged,     
+    minuteCaloriesNarrow_merged,
+    minuteIntensitiesNarrow_merged,
+    minuteMETsNarrow_merged,   
+    minuteSleep_merged,     
+    minuteStepsNarrow_merged,   
+    sleepDay_merged,          
+    weightLogInfo_merged
+    )
+
+# compute dataset characteristics
+num_unique = num_row = num_var = num_missing_rows <- c()
+for(i in 1:length(DataFrames)){
+  # num_unique[i] <- length(unique(DataFrames[i]$Id)))
+  num_unique <- append(num_unique, length(unique(DataFrames[[i]]$Id)))
+  num_var <- append(num_var, ncol(DataFrames[[i]]))
+  num_row <- append(num_row, nrow(DataFrames[[i]]))
+  num_missing_rows <- append(num_missing_rows, sum(is.na(DataFrames[[i]])))
+}
+
+# prepare variable names of each dataset 
+get.col.names <- function(dataset) {
+  var_names <- paste(colnames(dataset),collapse=", ")
+}
+
+
+# Design Table For Summaries -----------------------------------------
+
+# Put sumamry values a dataframe
+summaries <- data.frame(
+  Datasets = paste(gsub("\\..*","",files),"csv","."),
+  Variables = unlist(lapply(DataFrames, get.col.names)),
+  `Num of Unique Ids` = num_unique,
+  `Num of Variables` = num_var,
+  `Num of Rows` = num_row,
+  `Missing Values` = unlist(num_missing_rows)
+)
+
+# Color the low unique Ids red
+summaries$Num.of.Unique.Ids <- cell_spec(
+  summaries$Num.of.Unique.Ids, 
+  # background = ifelse(summaries$Num.of.Unique.Ids < 33, "red", "white"),
+  color = ifelse(summaries$Num.of.Unique.Ids < 33, "red", "black")
+  )
+
+# Display the summaries
+kbl(summaries, escape = F) %>%
+  kable_paper("striped", full_width = F) %>%
+  column_spec(1, bold = T, border_right = T) %>%
+    column_spec(2, width = "30em") 
+```
+https://slcc.pressbooks.pub/technicalwritingatslcc/chapter/5-writing-the-results-section/
+
+
+
+#### Data Limitations:
+
+There are some limitations found. First and foremost, the datasets have inputs of only 33 unique users. This tells us that the data is not comprehencive. Of the 33 users only 8 entered weight, 12 heart rate and only 24 users for sleep enteries. Moreover, whithin the weight dataset some users did not enter information for all the variables. This means that the data is also incomplete and hence **not comprehencive**. However, since all of these 3 datasets are comprised of important variables, we will still work with those.
+
+The data comes from FitBit users, which is a second source. This tells us the data is **not original**. It means that the data may lead to inacurate insights, since the user beahaviour and the data distribution of FitBit is not the same as that of Bellabeat.
+
+Another limitation is that the data is **not current**. The dates at which the data was collected ranges from 4/12/2016 to 5/12/2016, which was about 5 years before the time of this case study.
+
+Another limition that will most likely affect data integrity is that the data was only collected for 30 days. So, having only 33 users' data, 30 enties each, will effect the reliability. Moreover we are expecting 30x33=990 rows, however, there are 940 in the daily dataset. This means that some users either did not enter the information, were not wearing the tracker or the device did not collect the data properly. Knowing this is important, otherwise, we should assume that the data might be **biased**. 
+
+Had this been an actual project that would intend to define Bellabeat's marketing strategy, these limitations would have been addressed befor stating the analysis phrase. However, Since this is a case study, and we do not have control over these limitations, we will still proceed to the analysis. Althoug we should mention the type of questions that the data analyst would ask in a real world scenario, befor proceeding with the data cleaning. Here they are:
+
+- Why some users generated more data rows then others. Is it a device data collection system or did they turn them off ?
+- Did users volunteerly contributed data or at their convenience or were they told the how often and when to use the app ?
+- Is it possible to know what what measures were taken to eleminate the sampling bias ?
+- Is it possible to obtain the newer version of these dataets dataset ?
+- Is it possible to obtain similar dataset from BelaBeat for originaliry ?
+
+#### Data Privacy
+
+BealaBeat's website provides an good data privacy section. Also comparing with its competitors, it seems to be well developed. Just looking at the first glance it is seems that BelaBeat can collect valuable data from its users and develope marketing strategies based on the data users provide, without revealing their identity or selling to another company. It needs further research to determine the validity of these assumtions. I will leave it to the reader and bellow provide links that might help. 
+
+https://openeffect.ca/fitness-trackers/Fitness_Tracker_Questions.pdf
+
+https://bellabeat.com/privacy-policy/
+
+# Data Cleaning And Processing
+
+The data cleaning strategy I used for this case study invoves the following steps:
+
+**Remove duplicates and irrelevant observations.**We will be merging the datasets so that we can analyze daily, hourly and minute data in an appropriate manner. In this step it is expected that duplicate rows will be created. We will simply remove the duplicates so that the results are accurate. As for irrelevant observations, not suprizinigly some of the variables do not fit into the context. Also some of them do not contain invaliid information such as LoggedActivitiesDistance, which only has 0s. So we will not keep the irrelevant columns for the analysis.
+
+**Dealing with outliers.**We may find that there are outliers in the datasets. Since we don't have enough unique users per dataset, we will consider the outliers as users who either adopted outstanding healty habits or the opposite.
+
+**Handling missing data.**Since the datasets are not complete, and some users did not contribute data for all the fields, ignor missing values and proceed with the analysis. After all, datasets are not current and there is no way to fill the missing values.
+
+**Validation.**The validation process involves making sure that the merged datasets follow the appropriate formats. 
+
+
+
+<!-- The key attributes for this case study include dates and times, calories burnt, steps, intensities, active minutes, heart rate, weigth; and some additional columns.  -->
+
+
+So, we already prepared ground for data processing in the data prep section. Since and decided that we should proceed with the anlaysis, despite the limitations, we will start the cleaning process. Befor we do so, we will take a first look at some of the key datasets and their attributes:
+
+<div style= "float:right;position: relative; top: +40px; relative; right: -30px;">
+
+```{r, echo = FALSE, warning = FALSE}
+# display the tables on the right side of the document
+
+kbl(head(minuteCaloriesNarrow_merged,5), align = "r", caption = 'MINUTE DATASET: minuteCaloriesNarrow_merged.csv') %>% 
+  kable_paper("striped", full_width = F)%>% 
+  scroll_box()
+
+kbl(head(minuteSleep_merged,5), align = "r", caption = 'MINUTE DATASET: minuteSleep_merged.csv') %>% 
+  kable_paper("striped", full_width = F) %>% 
+  scroll_box()
+
+kbl(head(hourlyCalories_merged,5), align = "r", caption = 'HOURLY DATASET: hourlyCalories_merged.csv',table.attr = "style='width:30%;'") %>% 
+  kable_paper("striped", full_width = F) %>% 
+  scroll_box()
+
+kbl(head(hourlySteps_merged,5), align = "r", caption = 'HOURLY DATASET: hourlySteps_merged.csv',table.attr = "style='width:30%;'")%>% kable_classic(full_width = F) %>% 
+  kable_paper("striped", full_width = F) %>% 
+  scroll_box()
+
+```
+</div>
+
+Looking at (Table 1) we can see that the first attribute of the datasets is **Id**, which serves them as a primary key. Also observe that along with the variables that measure ueser wellness activities, there is a column for the time each activity was measured. The column for time can have dates, hours, munutes and even seconds. 
+
+Also notice that some datasets have the same number of variables and can be merged by Id and date to make it easier to analize. Variables such as date attributes represent the same imformaiton but have different names, so we will rename them to be able to join them. We will solve these problem in the Data Cleaning section. In addition, I was not able to find documentation about the data collection procedure biasnessed will remain in quesiton.
+
+Even though most of the datasets are based on automatic data entries, some of values were entered manually, for instance, that of the weigth information. This and some other complications resulted in some data limitations disscused in the next subsection.
+
+First we notice that the variable names are not consistent accross the datasets. Next observe that not all 33 users entered information for all datasets. We also notice that some 
+TABLE 1 is the first few rows of "dailyActivity_merged.csv" dataset which is comprised of users daily activities. Notice that...
+
+An example of a dataset from each categoriy (minute, hour, date):
+
+Above we have 3 tables for daily, hourly, minute/second data. These few rows are a tiny part of the whole data. Right away one can notice that the datasets can be merged by Id, Date and Time. However, some of the column names need to change, in order for them to merge. Also, notice that, for instance in the second dataset of TABLE 3 the time is based on seconds, so it can be converted to minutes and merged with the first dataset. Simillarly we can summarize minute into hours or hours into days. For that we will need to match the column names and splet the column for Date into date and time. Subsequently we will have some metadata for each dataset, to see the whole picture. But for now we have some clues about how the data looks like.
+
+
+
+```{r, echo = FALSE, warning = FALSE}
+ # organize datasets to prepare for merge ------------------------------------------
+
+# organize the daily weight columns
+daily_weight <- weightLogInfo_merged %>%
+  separate(Date,c("ActivityDate", "Time"), sep = " ") %>%
+  rename(IsWeightManual = IsManualReport) %>%
+  select(Id,ActivityDate,WeightKg:LogId)
+
+# prepare daily sleep
+daily_sleep <- sleepDay_merged %>%
+  separate(SleepDay,c("ActivityDate", "Time"), sep = " ") %>%
+  select(-Time)
+
+# organize heart rate and aggrigate into minutes
+minute_heartrate <- heartrate_seconds_merged %>% # takes a while
+  mutate(Time = mdy_hms(Time)) %>%
+  separate(Time,c("ActivityDate", "Time"), sep = " ") %>%
+  mutate(Time = as.character.Date(parse_hm(Time)),Date = ymd(ActivityDate)) %>%
+  group_by(Id, ActivityDate, Time) %>%
+  summarise(AvgHeartrate = mean(Value),.groups = "drop")
+
+
+# final merge --------------------------------------------------------------------
+
+# merge and organize the minute datasets
+minute_data_merged <- minuteCaloriesNarrow_merged %>%
+  left_join(minuteIntensitiesNarrow_merged, by = c("Id", "ActivityMinute")) %>%
+  left_join(minuteMETsNarrow_merged, by = c("Id", "ActivityMinute")) %>%
+  left_join(minuteStepsNarrow_merged, by = c("Id", "ActivityMinute")) %>%
+  mutate(ActivityMinute = mdy_hms(ActivityMinute)) %>%
+  separate(ActivityMinute,c("Date", "Time"), sep = " ") %>%
+  mutate(Date = ymd(Date), Day = weekdays(Date)) %>%
+  left_join(minute_heartrate) %>% # AvgHeartrate already in format
+  select(Id,Date,Day,Time:Steps,AvgHeartrate)
+
+# merge and organize the hourly datasets
+hourly_data_merged <- hourlyCalories_merged %>%
+  left_join(hourlyIntensities_merged, by = c("Id", "ActivityHour")) %>%
+  left_join(hourlySteps_merged, by = c("Id", "ActivityHour")) %>%
+  mutate(ActivityHour = mdy_hms(ActivityHour)) %>%
+  separate(ActivityHour, c("Date", "Time"), sep = " ") %>%
+  mutate(Date = ymd(Date), Day = weekdays(Date)) %>%
+  rename(TotalStep = StepTotal) %>%
+  left_join(minute_heartrate) %>% # AvgHeartrate already in format
+  select(Id, Date, Time, Day, Calories, TotalIntensity:TotalStep, AvgHeartrate)
+
+# merge and organize daily datasets
+daily_data_merged <- dailyActivity_merged %>%
+  left_join(daily_sleep, by = c("Id", "ActivityDate")) %>%
+  left_join(daily_weight, by = c("Id", "ActivityDate")) %>%
+  left_join(minute_heartrate, by = c("Id", "ActivityDate")) %>%
+  mutate(ActivityDate = mdy(ActivityDate),Day = weekdays(ActivityDate)) %>%
+  rename(Date = ActivityDate ) %>%
+  select(
+    Id, Date, Day, Calories,
+    TotalSteps:SedentaryMinutes,
+    TotalSleepRecords:TotalTimeInBed,
+    WeightPounds:LogId,
+    -LoggedActivitiesDistance
+    )
+```
+
+<!-- [not sure weather to add]Bellow is the table that shows the percentage of missing values in each column relative to the expected count. We see that in some instances more then 90% users did not enter values for the variables, such as WeightPounds, Fat, BMI, IsWeightManual, LogId. This indicates an extreamly high number of missing values, considering that the datasets themselves are not quite comprehencev. Hence, we will refrain from analyzing these variables. Eveen though  -->
+
+```{r, echo = FALSE, warning = FALSE}
+# final datasets displayed --------------------------------------------------------------------
+head(daily_data_merged) %>%
+  kbl() %>%
+   kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+<!-- ```{r, echo = FALSE, warning = FALSE} -->
+<!-- # Duplicates -------------------------------------------------------------------- -->
+
+<!-- # # find the number of daily duplicates -->
+<!-- # daily_duplicates <- daily_data_merged %>% -->
+<!-- #   filter(duplicated(daily_data_merged)) %>% -->
+<!-- #   summarize(n()) -->
+<!-- #  -->
+<!-- # # find the number of hourly duplicates -->
+<!-- # hourly_duplicates <- hourly_data_merged %>% -->
+<!-- #   filter(duplicated(hourly_data_merged)) %>% -->
+<!-- #   summarize(n()) -->
+<!-- #  -->
+<!-- # # find the number of minute duplicates -->
+<!-- # minute_duplicates <- minute_data_merged %>% -->
+<!-- #   filter(duplicated(minute_data_merged)) %>% -->
+<!-- #   summarize(n()) -->
+<!-- #  -->
+<!-- # # duplicates into dataframe -->
+<!-- # duplicates <- data.frame(  -->
+<!-- #   Dataset = c("daily_data_merged", "hourly_data_merged", "minute_data_merged"), -->
+<!-- #   Duplicates = c( daily_duplicates, hourly_duplicates, minute_duplicates) -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # # display the number duplicates -->
+<!-- # kbl(duplicates) -->
+<!-- ``` -->
+
+<!-- Observe that only daily dataset containes duplicates. As discussed earlier, we will remove the three duplicates and keep the rest of the observations. -->
+
+<!-- ```{r} -->
+<!-- # remove the duplicates -->
+<!-- # daily_data_merged <- daily_data_merged %>% -->
+<!-- #   filter(!duplicated(daily_data_merged))  -->
+<!-- ``` -->
+
+<!-- <!-- There is no documentation for data validation procedures used for these datasets. This could help us understand how the accuracy and the quality of data before adding it. --> -->
+
+<!-- <!-- To make sure that the data was accurate we make sure that there was no human error in the manually inputed information. --> -->
+
+<!-- <!-- Weight information was recorded both as kg and pounds, so we will only leave pounds. --> -->
+
+<!-- <!-- Remove duplicates --> -->
+
+<!-- <!-- We can see that all the key data attributes are gathered in 3 datasets. These three datasets are comprized on.... --> -->
+<!-- <!-- in That sense the datasets are compatible. --> -->
+
+
+<!-- <!-- To make sure that data Consistency is in place --> -->
+
+<!-- <!-- To ensure data integrity --> -->
+
+<!-- <!-- By merging the datasets we already prepared ground for the analysis --> -->
+
+
+<!-- Now let's see how much calories the users burn per day: -->
+
+<!-- ### ImporTante -->
+<!-- The problem with weight is that it does not change quickly with activities. It may take week or months until there is a noticable change. Since we only have data for one month period, it will be irrelevant to analize the weight loss progress per user. However we might gain insights on the relationship between user groups with different weights and their wellness activities. -->
+
+<!-- <div style= "float:right;position: relative; top: -80px;"> -->
+<!-- ```{r} -->
+<!-- barplot1 <- daily_data_merged %>% -->
+<!--   group_by(Day) %>% -->
+<!--   summarise(AvgCalories = mean(Calories)) %>% -->
+<!--   arrange(desc(AvgCalories)) %>% -->
+<!--   ggplot(aes(x=reorder(Day,AvgCalories), y= AvgCalories, fill = AvgCalories)) + -->
+<!--   geom_bar(stat = "identity", width = 0.2) + -->
+<!--   geom_col( width = 0.4) + -->
+<!--   coord_flip() -->
+
+<!-- barplot1 -->
+<!-- ``` -->
+<!-- </div> -->
+
+<!-- Observe that the days in which users burn calories the most are saturday and tuesday. Lets take a look at the calories burnt hourly. -->
+
+<!-- ```{r, echo = FALSE, warning = FALSE} -->
+<!-- # lineplots -------------------------------------------------------------- -->
+
+<!-- # produce averages for calories, steps, intensity and heartrate for plots -->
+<!-- minute_avg <- minute_data_merged %>% -->
+<!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% -->
+<!--   group_by(Time) %>% -->
+<!--   summarise( -->
+<!--     AvgCalories = mean(Calories), -->
+<!--     AvgSteps = mean(Steps), -->
+<!--     # AvgIntensity = mean(Intensity), -->
+<!--     AvgHeartrate = mean(AvgHeartrate,na.rm = TRUE)) -->
+
+<!-- minute_avg_tue <- minute_data_merged %>% -->
+<!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% -->
+<!--   filter(Day == "Tuesday") %>% -->
+<!--   group_by(Time) %>% -->
+<!--   summarise( -->
+<!--     AvgCalories = mean(Calories), -->
+<!--     AvgSteps = mean(Steps), -->
+<!--     # AvgIntensity = mean(Intensity), -->
+<!--     AvgHeartrate = mean(AvgHeartrate,na.rm = TRUE)) -->
+
+<!-- minute_avg_sat <- minute_data_merged %>% -->
+<!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% -->
+<!--   filter(Day == "Sunday") %>% -->
+<!--   group_by(Time) %>% -->
+<!--   summarise( -->
+<!--     AvgCalories = mean(Calories), -->
+<!--     AvgSteps = mean(Steps), -->
+<!--     # AvgIntensity = mean(Intensity), -->
+<!--     AvgHeartrate = mean(AvgHeartrate,na.rm = TRUE)) -->
+
+<!-- # standardize the datasets / find z-scores -->
+<!-- minute_avg <- minute_avg %>% mutate_at(scale, .vars = vars(-Time)) -->
+<!-- minute_avg_tue <- minute_avg_tue %>% mutate_at(scale, .vars = vars(-Time)) -->
+<!-- minute_avg_sat <- minute_avg_sat %>% mutate_at(scale, .vars = vars(-Time)) -->
+
+<!-- # turn into wide format -->
+<!-- minute_avg <- melt(minute_avg, id = "Time") -->
+<!-- minute_avg_tue <- melt(minute_avg_tue, id = "Time") -->
+<!-- minute_avg_sat <- melt(minute_avg_sat, id = "Time") -->
+
+<!-- # lines of calories per hour -->
+<!-- lineplot1 <- ggplot(minute_avg, aes(Time, value, group =variable )) + -->
+<!--   geom_line(aes(color=variable)) -->
+
+<!-- lineplot2 <- ggplot(minute_avg_tue, aes(Time, value, group =variable )) + -->
+<!--   geom_line(aes(color=variable)) -->
+
+<!-- lineplot3 <- ggplot(minute_avg_sat, aes(Time, value, group =variable )) + -->
+<!--   geom_line(aes(color=variable)) -->
+
+<!-- # display -->
+<!-- lineplot1 -->
+<!-- grid.arrange(lineplot2, lineplot3, ncol=2) -->
+
+<!-- ``` -->
+
+
+<!-- <!-- We already mentioned that some users didn't contribute data for all the expected times. This means that there might be dispersion in the number of minutes the users recorded data. To see the distribution we grouped data by unique IDs and computed the number of minutes.  --> -->
+
+<!-- <!-- ```{r, echo = FALSE, warning = FALSE} --> -->
+<!-- <!-- ## User Summaries  ------------------------------------------ --> -->
+
+<!-- <!-- # Usage Summary --> -->
+<!-- <!-- minute_usage <- minute_data_narrow %>% --> -->
+<!-- <!--   group_by(Id) %>% --> -->
+<!-- <!--   select(Id,Date) %>% --> -->
+<!-- <!--   summarise(NumMinutes = n()) %>% --> -->
+<!-- <!--   mutate(Usage = if_else(NumMinutes < 40000, "Low", "High")) --> -->
+
+<!-- <!-- # histogram of usage --> -->
+<!-- <!-- ggplot(minute_usage, aes(x=NumMinutes,fill = Usage))+ --> -->
+<!-- <!--   geom_histogram(bins = 50, color = "Black") --> -->
+<!-- <!-- ``` --> -->
+
+
+
+<!-- <!-- We can observe that most users contributed more then 40,000 minutes. We can consider less then 40,000 as less then expected and hence put them in two groups: Low Usage for less then 40,000 minutes and High Usage for more then 40,000. --> -->
+
+<!-- <!-- ```{r} --> -->
+<!-- <!-- # Hourly Usages ---------------------------------------- --> -->
+
+<!-- <!-- # add Usages --> -->
+<!-- <!-- minute_avg_highcont <- minute_data_merged %>% --> -->
+<!-- <!--   filter(Usage == "High") %>% --> -->
+<!-- <!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% --> -->
+<!-- <!--   group_by(Time) %>% --> -->
+<!-- <!--   summarise( --> -->
+<!-- <!--     AvgCalories = mean(Calories), --> -->
+<!-- <!--     AvgSteps = mean(Steps), --> -->
+<!-- <!--     AvgIntensity = mean(Intensity), --> -->
+<!-- <!--     AvgHeartrate = mean(AvgHeartrate,na.rm = TRUE), --> -->
+<!-- <!--     NumUsers = n()) %>% --> -->
+<!-- <!--   mutate(NumUsers = (NumUsers- min(NumUsers))/(max(NumUsers)- min(NumUsers))) --> -->
+
+<!-- <!-- # aggregare Usages --> -->
+<!-- <!-- minute_avg_lowcont <- minute_data_merged %>% --> -->
+<!-- <!--   filter(Usage == "Low") %>% --> -->
+<!-- <!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% --> -->
+<!-- <!--   group_by(Time) %>% --> -->
+<!-- <!--   summarise( --> -->
+<!-- <!--     AvgCalories = mean(Calories), --> -->
+<!-- <!--     AvgSteps = mean(Steps), --> -->
+<!-- <!--     AvgIntensity = mean(Intensity), --> -->
+<!-- <!--     AvgHeartrate = mean(AvgHeartrate,na.rm = TRUE), --> -->
+<!-- <!--     NumUsers = n())  %>% --> -->
+<!-- <!--   mutate(NumUsers = (NumUsers- min(NumUsers))/(max(NumUsers)- min(NumUsers))) --> -->
+
+
+<!-- <!-- # add a Usage column --> -->
+<!-- <!-- minute_avg_highcont$Usage = "High" --> -->
+<!-- <!-- minute_avg_lowcont$Usage = "Low" --> -->
+
+<!-- <!-- # merge high and low Usages --> -->
+<!-- <!-- minute_Usage <- minute_avg_highcont %>% --> -->
+<!-- <!--   full_join(minute_avg_lowcont)  --> -->
+
+<!-- <!-- ggplot(minute_Usage, aes(Time, NumUsers, fill =Usage)) + --> -->
+<!-- <!--   geom_line(aes(linetype=Usage, color = Usage), size=1) + --> -->
+<!-- <!--   # geom_col(stat = "identity", position = position_dodge(),size = 0.02) + --> -->
+<!-- <!--   theme_bw(base_size = 12) + --> -->
+<!-- <!--   theme(legend.position="bottom")  --> -->
+
+<!-- <!-- ggplot(minute_Usage, aes(Time, AvgCalories, fill =Usage)) + --> -->
+<!-- <!--   geom_line(aes(color = Usage), size=1) + --> -->
+<!-- <!--   # geom_col(stat = "identity", position = position_dodge(),size = 0.02) + --> -->
+<!-- <!--   theme_bw(base_size = 12) + --> -->
+<!-- <!--   theme(legend.position="bottom")  --> -->
+<!-- <!-- ``` --> -->
+
+
+<!-- <!-- We can observe that the numbber of users by the time of the day has the same pattern for both high and low users. Bear in mind that the variable NumUsers has been scaled to the range of 0-1. This was done because there is a big gap between the two categories and scaling makes it easier to compare. This creates contrast between the variables without   --> -->
+
+<!-- <!-- It would also be interesting why the app usage has its peak at midnight and keeps depleting until the next midnight. One possibility is that they wear the braclet  --> -->
+
+<!-- <!-- ```{r} --> -->
+<!-- <!-- # Daily Usages --------------------- --> -->
+
+<!-- <!-- # add Usages --> -->
+<!-- <!-- day_avg_highcont <- minute_data_merged %>% --> -->
+<!-- <!--   filter(Usage == "High") %>% --> -->
+<!-- <!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% --> -->
+<!-- <!--   group_by(Time,Day) %>% --> -->
+<!-- <!--   summarise( --> -->
+<!-- <!--     NumUsers = n()) %>% --> -->
+<!-- <!--   mutate(NumUsers = (NumUsers- min(NumUsers))/(max(NumUsers)- min(NumUsers))) --> -->
+<!-- <!--     # mutate_at(scale, .vars = vars(NumUsers)) --> -->
+
+<!-- <!-- # add Usages --> -->
+<!-- <!-- day_avg_lowcont <- minute_data_merged %>% --> -->
+<!-- <!--   filter(Usage == "Low") %>% --> -->
+<!-- <!--   mutate(Time = as.POSIXct(hms::parse_hms(Time))) %>% --> -->
+<!-- <!--   group_by(Time,Day) %>% --> -->
+<!-- <!--   summarise( --> -->
+<!-- <!--     NumUsers = n())  %>% --> -->
+<!-- <!--   mutate(NumUsers = (NumUsers- min(NumUsers))/(max(NumUsers)- min(NumUsers))) --> -->
+
+<!-- <!-- # add a Usage column --> -->
+<!-- <!-- day_avg_highcont$Usage = "High" --> -->
+<!-- <!-- day_avg_lowcont$Usage = "Low" --> -->
+
+<!-- <!-- # merge high and low Usages --> -->
+<!-- <!-- dat_Usage <- day_avg_highcont %>% --> -->
+<!-- <!--   full_join(day_avg_lowcont)  --> -->
+<!-- <!-- dat_Usage --> -->
+<!-- <!-- # 0-1 range lines for each contriburion --> -->
+<!-- <!-- ggplot(dat_Usage, aes(Time, NumUsers, fill =Usage)) + --> -->
+<!-- <!--   geom_line(aes(linetype=Usage, color = Usage), size=1) + --> -->
+<!-- <!--   # geom_col(stat = "identity", position = position_dodge(),size = 0.02) + --> -->
+<!-- <!--   theme_bw(base_size = 12) + --> -->
+<!-- <!--   theme(legend.position="bottom") + --> -->
+<!-- <!--   facet_wrap(~ Day) --> -->
+
+<!-- <!-- ggplot(hourly_data_merged, aes(Time, StepTotal, fill =Usage)) + --> -->
+<!-- <!--   geom_line(aes(linetype=Usage, color = Usage), size=1) + --> -->
+<!-- <!--   # geom_col(stat = "identity", postition = position_dodge(),size = 0.02) + --> -->
+<!-- <!--   theme_bw(base_size = 12) + --> -->
+<!-- <!--   theme(legend.position="bottom") + --> -->
+<!-- <!--   facet_wrap(~ Day) --> -->
+
+<!-- <!-- ggplot(hourly_data_merged, aes(Time, fill =Usage)) + --> -->
+<!-- <!--   geom_line(aes(y = AvgHeartrate, color = Usage), size=1) + --> -->
+<!-- <!--   # geom_col(stat = "identity", postition = position_dodge(),size = 0.02) + --> -->
+<!-- <!--   theme_bw(base_size = 12) + --> -->
+<!-- <!--   theme(legend.position="bottom") + --> -->
+<!-- <!--   facet_wrap(~ Day) --> -->
+
+
+<!-- <!-- ggplot(hourly_data_merged, aes(x=Time, y=melt(AvgHeartrate), group=Usage)) + --> -->
+<!-- <!--   geom_line(linetype="dashed", color="blue", size=1.2)+ --> -->
+<!-- <!--   geom_point(color="red", size=3) --> -->
+
+<!-- <!-- ggplot(hourly_data_merged, aes(Time, AvgHeartrate group=1)) +  --> -->
+<!-- <!--   geom_path() --> -->
+<!-- <!-- ``` --> -->
+
+
+
+<!-- <!-- ```{r, echo = FALSE, warning = FALSE} --> -->
+<!-- <!-- # Relationshps -------------------------------------------------------------------- --> -->
+
+<!-- <!-- # https://www.kaggle.com/chebotinaa/bellabeat-case-study-with-r --> -->
+
+<!-- <!-- # some scaterplots to reveal th --> -->
+<!-- <!--   daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=Calories, y= TotalSteps, color = Usage)) + --> -->
+<!-- <!--   geom_point() --> -->
+
+<!-- <!--   daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=Calories, y= WeightPounds)) + --> -->
+<!-- <!--   geom_point() --> -->
+
+<!-- <!--   daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=Calories, y= AvgHeartrate)) + --> -->
+<!-- <!--   geom_point() --> -->
+
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=Calories, y= FairlyActiveMinutes)) + --> -->
+<!-- <!--   geom_point() --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   select( --> -->
+<!-- <!--     Calories, TotalSteps, TotalDistance,TotalMinutesAsleep, WeightPounds,TotalTimeInBed --> -->
+<!-- <!--      ) %>% --> -->
+<!-- <!--      ggpairs(title="correlogram with ggpairs()") --> -->
+
+<!-- <!-- hourly_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=Calories, y= FairlyActiveMinutes)) + --> -->
+<!-- <!--   geom_point() --> -->
+
+<!-- <!-- daily_data_merged --> -->
+<!-- <!-- # plot with outliers --> -->
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   select( --> -->
+<!-- <!--     Calories, inten --> -->
+<!-- <!--      ) %>% --> -->
+<!-- <!--      ggpairs(aes(colour=Usage),title="correlogram with ggpairs()") --> -->
+
+<!-- <!-- daily_data_merged --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   select( --> -->
+<!-- <!--     Calories, WeightPounds,TotalSteps,TotalMinutesAsleep,TotalTimeInBed, Usage, Day --> -->
+<!-- <!--      ) %>% --> -->
+<!-- <!--   rename(C = Usage) %>% --> -->
+<!-- <!--   ggpairs(mapping = aes(colour = C),title="correlogram with ggpairs()", --> -->
+<!-- <!--               lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1))) --> -->
+
+<!-- <!-- # find the outliers --> -->
+<!-- <!-- outliers_hourly_steps <- boxplot.stats(hourly_data_merged$Calories)$out --> -->
+<!-- <!-- outliers_hourly_calories <- boxplot.stats(hourly_data_merged$StepTotal)$out --> -->
+<!-- <!-- outliers_hourly_heartrate <- boxplot.stats(hourly_data_merged$AvgHeartrate)$out --> -->
+
+<!-- <!-- # plot without outliers --> -->
+<!-- <!-- hourly_data_merged %>% --> -->
+<!-- <!--   select(StepTotal,Calories, AvgHeartrate) %>% --> -->
+<!-- <!--   filter(!Calories %in% outliers_hourly_calories, --> -->
+<!-- <!--          !StepTotal %in% outliers_hourly_steps, --> -->
+<!-- <!--          !AvgHeartrate %in% outliers_hourly_heartrate) %>% --> -->
+<!-- <!--      ggpairs(title="correlogram with ggpairs()") --> -->
+
+
+<!-- <!-- ``` --> -->
+
+<!-- <!-- Maybe if active users step less they workout more. Let's check. --> -->
+
+
+<!-- <!-- ```{r} --> -->
+
+<!-- <!-- daily_data_merged --> -->
+<!-- <!-- hourly_data_merged --> -->
+
+<!-- <!-- # correlogram --> -->
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   select(Calories,TotalSteps, TotalMinutesAsleep,Usage, VeryActiveMinutes, FairlyActiveMinutes --> -->
+<!-- <!-- ,LightlyActiveMinutes,SedentaryMinutes) %>% --> -->
+<!-- <!--   rename(C = Usage) %>% --> -->
+<!-- <!--   mutate( StepIntencity = if_else(TotalSteps < 420, "Low","High", missing = NULL)) %>% --> -->
+<!-- <!--   select(-StepIntencity) %>% --> -->
+<!-- <!--   # na.omit() %>% --> -->
+<!-- <!--   ggpairs(mapping = aes(colour = C),title="correlogram with ggpairs()", --> -->
+<!-- <!--               lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1,alignPercent=0.8))) + --> -->
+<!-- <!--   theme(panel.grid.major = element_blank()) --> -->
+
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   select(Calories,Usage --> -->
+<!-- <!-- ,LightlyActiveMinutes,SedentaryMinutes) %>% --> -->
+<!-- <!--   rename(C = Usage) %>% --> -->
+<!-- <!--   # na.omit() %>% --> -->
+<!-- <!--   ggpairs(mapping = aes(colour = C),title="correlogram with ggpairs()", --> -->
+<!-- <!--               lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1))) + --> -->
+<!-- <!--   theme(panel.grid.major = element_blank()) --> -->
+
+
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--     ggplot(aes(LightlyActiveMinutes,Calories)) +  --> -->
+<!-- <!--     geom_point(aes(color = Usage)) +  --> -->
+<!-- <!--     geom_smooth(aes(color = Usage), method = lm, se = FALSE, fullrange = TRUE)  --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=TotalSteps, group=Usage, fill=Usage)) + --> -->
+<!-- <!--       geom_density(adjust=1.5, alpha=.4)  --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=TotalMinutesAsleep, group=Usage, fill=Usage)) + --> -->
+<!-- <!--       geom_density(adjust=1.5, alpha=.4)  --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--   ggplot(aes(x=Calories, group=Usage, fill=Usage)) + --> -->
+<!-- <!--       geom_density(adjust=1.5, alpha=.4)  --> -->
+<!-- <!-- # + --> -->
+<!-- <!-- #       scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))+ --> -->
+<!-- <!-- #     scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) --> -->
+
+<!-- <!-- ``` --> -->
+
+
+
+
+<!-- <!-- ```{r} --> -->
+<!-- <!-- install.packages("ggscatter") --> -->
+
+<!-- <!-- cor1 = grobTree(textGrob(paste("Pearson Correlation : ", round(cor(day_avg_highcont$TotalSteps, day_avg_highcont$VeryActiveDistance), 4) ), x = 0.63, y = 0.97, hjust = 0, gp = gpar(col = "red", fontsize = 11, fontface = "bold"))) --> -->
+
+<!-- <!-- cor2 = grobTree(textGrob(paste("Pearson Correlation : ", round(cor(day_avg_lowcont$TotalSteps, day_avg_lowcont$VeryActiveDistance), 4) ), x = 0.63, y = 0.90, hjust = 0, gp = gpar(col = "turquoise3", fontsize = 11, fontface = "bold"))) --> -->
+<!-- <!-- hourly_data_merged --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--     ggplot(aes(TotalDistance,VeryActiveDistance)) +  --> -->
+<!-- <!--     geom_point(aes(color = Usage)) +  --> -->
+<!-- <!--     geom_smooth(aes(color = Usage), method = lm, se = T, fullrange = TRUE) + annotation_custom(cor1) + annotation_custom(cor2) --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--     ggplot(aes(TotalDistance,LightActiveDistance)) +  --> -->
+<!-- <!--     geom_point(aes(color = Usage)) +  --> -->
+<!-- <!--     geom_smooth(aes(color = Usage), method = lm, se = T, fullrange = TRUE)  --> -->
+
+<!-- <!-- hourly_data_merged %>% --> -->
+<!-- <!--     ggplot(aes(StepTotal, VeryActiveDistance)) +  --> -->
+<!-- <!--     geom_point(aes(color = Usage)) +  --> -->
+<!-- <!--     geom_smooth(aes(color = Usage), method = lm, se = FALSE, fullrange = TRUE)  --> -->
+
+<!-- <!-- daily_data_merged %>% --> -->
+<!-- <!--     ggplot(aes(Calorie,VeryActiveDistance)) +  --> -->
+<!-- <!--     geom_point(aes(color = Usage)) +  --> -->
+<!-- <!--     geom_smooth(aes(color = Usage), method = lm, se = FALSE, fullrange = TRUE)  --> -->
+<!-- <!-- daily_data_merged --> -->
+<!-- <!-- ``` --> -->
+
+<!-- <!-- Among the active users, we see that the red observations above the red line are the ones that push harder. BellaBeat should consrtuct a classification algorithm to spot those users and recomend them a corresponding routine. --> -->
+
+
+

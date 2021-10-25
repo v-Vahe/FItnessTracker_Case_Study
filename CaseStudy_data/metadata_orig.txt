@@ -1,0 +1,13 @@
+"Datasets"	"Variables"	"Num.of.Unique.Ids"	"Num.of.Variables"	"Num.of.Rows"	"Missing.Values"
+"dailyActivity_merged . csv"	"Id, ActivityDate, TotalSteps, TotalDistance, TrackerDistance, LoggedActivitiesDistance, VeryActiveDistance, ModeratelyActiveDistance, LightActiveDistance, SedentaryActiveDistance, VeryActiveMinutes, FairlyActiveMinutes, LightlyActiveMinutes, SedentaryMinutes, Calories"	33	15	940	0
+"heartrate_seconds_merged . csv"	"Id, Time, Value"	14	3	2483658	0
+"hourlyCalories_merged . csv"	"Id, ActivityHour, Calories"	33	3	22099	0
+"hourlyIntensities_merged . csv"	"Id, ActivityHour, TotalIntensity, AverageIntensity"	33	4	22099	0
+"hourlySteps_merged . csv"	"Id, ActivityHour, StepTotal"	33	3	22099	0
+"minuteCaloriesNarrow_merged . csv"	"Id, ActivityMinute, Calories"	33	3	1325580	0
+"minuteIntensitiesNarrow_merged . csv"	"Id, ActivityMinute, Intensity"	33	3	1325580	0
+"minuteMETsNarrow_merged . csv"	"Id, ActivityMinute, METs"	33	3	1325580	0
+"minuteSleep_merged . csv"	"Id, date, value, logId"	24	4	188521	0
+"minuteStepsNarrow_merged . csv"	"Id, ActivityMinute, Steps"	33	3	1325580	0
+"sleepDay_merged . csv"	"Id, SleepDay, TotalSleepRecords, TotalMinutesAsleep, TotalTimeInBed"	24	5	413	0
+"weightLogInfo_merged . csv"	"Id, Date, WeightKg, WeightPounds, Fat, BMI, IsManualReport, LogId"	8	8	67	65

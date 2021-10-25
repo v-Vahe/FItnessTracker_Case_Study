@@ -1,0 +1,780 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={R Notebook},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{R Notebook}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{summary}{%
+\section{Summary}\label{summary}}
+
+In this case study I will analyze data from FitBit users, which is a
+personal health tracker. The objective is to gain insights from FitBit
+secondary data, to drive business decisions for another health tracker
+company BellaBeat. This data analysis can help guide Bellabeat's
+marketing strategies particularly for two of their products Leaf
+(tracker braclet) and Time (wellness watch). The main feature of these
+products is to track and measure wellness activities of the users, then
+connect to Bellabeat app. The app then provides users with insights into
+their daily wellness, using variables such as sleep, stress, calories
+burnt, menstrual cycle, and mindfulness habits. The data and some
+instructions were provided by Google Data Analytics, which is a course
+developed by Goole on Cursera. Here we will only use deliverables and
+guiding questions from that as though they were given to us by the
+marketing team in Bellabeat.
+
+So, we already developed a business task, which is, esentially, to
+provide BellaBeat with recommendations for their marketing strategy. To
+reach that goal, the main aproach used in this case study is to follow
+these steps: first to develope a scenario, then understand what the
+stakeholders would be interested in (deliverables), pre-determine some
+guiding questions the answers for which can lead to the desired
+recomendations for the marketing team; and, finaly, proceed with the
+data analysis processes (Data Preparation, Data Cleaning and Processing,
+Analyze and Visualize).
+
+\hypertarget{deliverables}{%
+\subsubsection{Deliverables}\label{deliverables}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A clear summary of the business task
+\item
+  A description of all data sources used
+\item
+  Documentation of any cleaning or manipulation of data
+\item
+  A summary of your analysis
+\item
+  Supporting visualizations and key findings
+\item
+  Your top high-level content recommendations based on your analysis
+\end{enumerate}
+
+\hypertarget{some-guiding-questions-to}{%
+\subsubsection{Some guiding questions
+to}\label{some-guiding-questions-to}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  What are some trends in smart device usage?
+\item
+  How could these trends apply to Bellabeat customers?
+\item
+  How could these trends help influence Bellabeat marketing strategy?
+\end{enumerate}
+
+\hypertarget{how-to-read-the-write-up-and-the-code}{%
+\subsubsection{How to read the write up and the
+code}\label{how-to-read-the-write-up-and-the-code}}
+
+This case study is devided into sections and subsections. After the
+summary each section can be seen as a data analysis phraze such as
+prepare and process data. The sections will include key findings in that
+particular phrase and also some explanations about the code used in that
+phraze.
+
+The analysis was performed using R, since some of the files included too
+many rows and R is known for handling many rows efficiently. The code
+outputs will be displayed, but the code itself is hidden and it can be
+expanded if needed. On top of reading the script chunk by chunk, one can
+find the whole script at the end of this document (the order of code
+execution is same both in chunks and the ). The script used for this
+case study is provided at the end of this document . The variables and
+outputs in each chunk of code also depends on the computations in the
+previous chunks.
+
+\hypertarget{data-preparation}{%
+\section{Data Preparation}\label{data-preparation}}
+
+In this step, we need to prepare data for the processing and analysis.
+Since we already have aggrigated data, in this step we will just take a
+first look at the datasets, summarize them and descover some data
+quality characteristics. Bellow there are 3 tables that show the first
+few row of the
+
+\begin{verbatim}
+## 
+## Attaching package: 'lubridate'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:chron':
+## 
+##     days, hours, minutes, seconds, years
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     date, intersect, setdiff, union
+\end{verbatim}
+
+\begin{verbatim}
+## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+\end{verbatim}
+
+\begin{verbatim}
+## v ggplot2 3.3.5     v dplyr   1.0.7
+## v tibble  3.1.4     v stringr 1.4.0
+## v tidyr   1.1.3     v forcats 0.5.1
+## v purrr   0.3.4
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x lubridate::as.difftime() masks base::as.difftime()
+## x dplyr::combine()         masks gridExtra::combine()
+## x lubridate::date()        masks base::date()
+## x lubridate::days()        masks chron::days()
+## x dplyr::filter()          masks stats::filter()
+## x lubridate::hours()       masks chron::hours()
+## x lubridate::intersect()   masks base::intersect()
+## x dplyr::lag()             masks stats::lag()
+## x lubridate::minutes()     masks chron::minutes()
+## x lubridate::seconds()     masks chron::seconds()
+## x lubridate::setdiff()     masks base::setdiff()
+## x lubridate::union()       masks base::union()
+## x lubridate::years()       masks chron::years()
+\end{verbatim}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'printr':
+##   method                from     
+##   knit_print.data.frame rmarkdown
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'hms'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:lubridate':
+## 
+##     hms
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'kableExtra'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     group_rows
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'reshape2'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:tidyr':
+## 
+##     smiths
+\end{verbatim}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityDate = col_character(),
+##   TotalSteps = col_double(),
+##   TotalDistance = col_double(),
+##   TrackerDistance = col_double(),
+##   LoggedActivitiesDistance = col_double(),
+##   VeryActiveDistance = col_double(),
+##   ModeratelyActiveDistance = col_double(),
+##   LightActiveDistance = col_double(),
+##   SedentaryActiveDistance = col_double(),
+##   VeryActiveMinutes = col_double(),
+##   FairlyActiveMinutes = col_double(),
+##   LightlyActiveMinutes = col_double(),
+##   SedentaryMinutes = col_double(),
+##   Calories = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   Time = col_character(),
+##   Value = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityHour = col_character(),
+##   Calories = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityHour = col_character(),
+##   TotalIntensity = col_double(),
+##   AverageIntensity = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityHour = col_character(),
+##   StepTotal = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityMinute = col_character(),
+##   Calories = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityMinute = col_character(),
+##   Intensity = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityMinute = col_character(),
+##   METs = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   date = col_character(),
+##   value = col_double(),
+##   logId = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   ActivityMinute = col_character(),
+##   Steps = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   SleepDay = col_character(),
+##   TotalSleepRecords = col_double(),
+##   TotalMinutesAsleep = col_double(),
+##   TotalTimeInBed = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Id = col_double(),
+##   Date = col_character(),
+##   WeightKg = col_double(),
+##   WeightPounds = col_double(),
+##   Fat = col_double(),
+##   BMI = col_double(),
+##   IsManualReport = col_logical(),
+##   LogId = col_double()
+## )
+\end{verbatim}
+
+\hypertarget{data-summary}{%
+\paragraph{Data Summary:}\label{data-summary}}
+
+In order to summarize the data we need to examine each dataset closly.
+Originaly there where 18 available datasets that were obtained from
+Kaggle(XXXX add link). Since some datasets had only repeated columns,
+insignificant data or wide format, I only kept 12 datasets. They are
+comprised of 33 unique users, some of them even less. The user data was
+tracked from 4/12/2016 to 5/12/2016 (over 31 days).
+
+The dates for the 12 datasets were recorded and some of them included
+hours, munutes and even second. The datasets are in narrow format. Of
+the 18 datasets only 12 were used, since some columns repeated across
+the datasets and some of them did not fit the context in the context of
+this case study. Here is some metadata
+
+\begin{table}
+\centering
+\begin{tabular}[t]{>{}l||>{\raggedright\arraybackslash}p{30em}|r|r|r|r}
+\hline
+Datasets & Variables & Num.of.Unique.Ids & Num.of.Variables & Num.of.Rows & Missing.Values\\
+\hline
+\textbf{dailyActivity\_merged csv .} & \cellcolor{white}{Id, ActivityDate, TotalSteps, TotalDistance, TrackerDistance, LoggedActivitiesDistance, VeryActiveDistance, ModeratelyActiveDistance, LightActiveDistance, SedentaryActiveDistance, VeryActiveMinutes, FairlyActiveMinutes, LightlyActiveMinutes, SedentaryMinutes, Calories} & 33 & 15 & 940 & 0\\
+\hline
+\textbf{heartrate\_seconds\_merged csv .} & \cellcolor{white}{Id, Time, Value} & 14 & 3 & 2483658 & 0\\
+\hline
+\textbf{hourlyCalories\_merged csv .} & \cellcolor{white}{Id, ActivityHour, Calories} & 33 & 3 & 22099 & 0\\
+\hline
+\textbf{hourlyIntensities\_merged csv .} & \cellcolor{white}{Id, ActivityHour, TotalIntensity, AverageIntensity} & 33 & 4 & 22099 & 0\\
+\hline
+\textbf{hourlySteps\_merged csv .} & \cellcolor{white}{Id, ActivityHour, StepTotal} & 33 & 3 & 22099 & 0\\
+\hline
+\textbf{minuteCaloriesNarrow\_merged csv .} & \cellcolor{white}{Id, ActivityMinute, Calories} & 33 & 3 & 1325580 & 0\\
+\hline
+\textbf{minuteIntensitiesNarrow\_merged csv .} & \cellcolor{white}{Id, ActivityMinute, Intensity} & 33 & 3 & 1325580 & 0\\
+\hline
+\textbf{minuteMETsNarrow\_merged csv .} & \cellcolor{white}{Id, ActivityMinute, METs} & 33 & 3 & 1325580 & 0\\
+\hline
+\textbf{minuteSleep\_merged csv .} & \cellcolor{white}{Id, date, value, logId} & 24 & 4 & 188521 & 0\\
+\hline
+\textbf{minuteStepsNarrow\_merged csv .} & \cellcolor{white}{Id, ActivityMinute, Steps} & 33 & 3 & 1325580 & 0\\
+\hline
+\textbf{sleepDay\_merged csv .} & \cellcolor{white}{Id, SleepDay, TotalSleepRecords, TotalMinutesAsleep, TotalTimeInBed} & 24 & 5 & 413 & 0\\
+\hline
+\textbf{weightLogInfo\_merged csv .} & \cellcolor{white}{Id, Date, WeightKg, WeightPounds, Fat, BMI, IsManualReport, LogId} & 8 & 8 & 67 & 65\\
+\hline
+\end{tabular}
+\end{table}
+
+The key columns include dates and times, calories burnt, steps,
+intensities, active minutes, heart rate, weigth; and some additional
+columns.
+
+Even though most of the datasets are based on automatic data entries,
+some of values were entered manually, for instance, that of the weigth
+information. This and many other complications resulted in some data
+limitations disscused in the next subsection.
+
+First we notice that the variable names are not consistent accross the
+datasets. Next observe that not all 33 users entered information for all
+datasets. We also notice that some
+
+\hypertarget{data-limitations}{%
+\paragraph{Data Limitations:}\label{data-limitations}}
+
+There are some limitations found. First and foremost, the datasets have
+inputs of only 33 unique users. This tells us that the data is not
+comprehencive. Of the 33 users only 8 entered weight, 12 heart rate and
+only 24 users for sleep enteries. Moreover, whithin the weight dataset
+some users did not enter information for all the variables. This means
+that the data is also incomplete and hence \emph{not comprehencive}.
+
+The data comes from FitBit users, which is a second source. This tells
+us the data is \emph{not original}. It means that the data may lead to
+inacurate insights, since the user beahaviour and the data distribution
+of FitBit is not the same as that of Bellabeat.
+
+Another limitation is that the data is \emph{not current}. The dates at
+which the data was collected ranges from 4/12/2016 to 5/12/2016, which
+was about 5 years before the time of this case study.
+
+Had this been an actual project that would intend to define Bellabeat's
+marketing strategy, these limitations would have been addressed befor
+stating the analysis phrase. However, Since this is a case study, and we
+do not have control over these limitations, we will still proceed to the
+analysis.
+
+Another limition that will most likely affect data integrity is that the
+data was only collected for 30 days. So, having only 33 users' data 30
+enty each will effect the reliability. Moreover we are ecpecting
+30x33=990 rows, however, there are 940 in the daily dataset. This means
+that some users either did not enter the information, were not wearing
+the tracker or the app did not collect the data properly.
+
+\hypertarget{data-privacy}{%
+\paragraph{Data Privacy}\label{data-privacy}}
+
+\url{https://openeffect.ca/fitness-trackers/Fitness_Tracker_Questions.pdf}
+\url{https://bellabeat.com/privacy-policy/}
+
+\hypertarget{data-cleaning}{%
+\section{Data Cleaning}\label{data-cleaning}}
+
+Now as we have all the FitBit datasets available in the environment, we
+can take a first look at three of the datasets that include some of the
+key attributes for this case study.
+
+TABLE 1 is the first few rows of ``dailyActivity\_merged.csv'' dataset
+which is comprised of users daily activities. Notice that\ldots{}
+
+An example of a dataset from each categoriy (minute, hour, date):
+\textbackslash begin\{table\}
+
+\caption{\label{tab:unnamed-chunk-3}TABLE 2: Side By Side Hourly Datasets}
+
+\begin{longtable}[]{@{}rlr@{}}
+\caption{MINUTE DATASET:
+minuteCaloriesNarrow\_merged.csv}\tabularnewline
+\toprule
+Id & ActivityMinute & Calories\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Id & ActivityMinute & Calories\tabularnewline
+\midrule
+\endhead
+1503960366 & 4/12/2016 12:00:00 AM & 0.7865\tabularnewline
+1503960366 & 4/12/2016 12:01:00 AM & 0.7865\tabularnewline
+1503960366 & 4/12/2016 12:02:00 AM & 0.7865\tabularnewline
+1503960366 & 4/12/2016 12:03:00 AM & 0.7865\tabularnewline
+1503960366 & 4/12/2016 12:04:00 AM & 0.7865\tabularnewline
+1503960366 & 4/12/2016 12:05:00 AM & 0.9438Table: HOURLY DATASET:
+hourlyIntensities\_merged.csv\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}rlrr@{}}
+\toprule
+Id & ActivityHour & TotalIntensity & AverageIntensity\tabularnewline
+\midrule
+\endhead
+1503960366 & 4/12/2016 12:00:00 AM & 20 & 0.333333\tabularnewline
+1503960366 & 4/12/2016 1:00:00 AM & 8 & 0.133333\tabularnewline
+1503960366 & 4/12/2016 2:00:00 AM & 7 & 0.116667\tabularnewline
+1503960366 & 4/12/2016 3:00:00 AM & 0 & 0.000000\tabularnewline
+1503960366 & 4/12/2016 4:00:00 AM & 0 & 0.000000\tabularnewline
+1503960366 & 4/12/2016 5:00:00 AM & 0 & 0.000000Table: DAILY DATASET:
+dailyActivity\_merged.csv\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}rlrrrrrrrrrrrrr@{}}
+\toprule
+Id & ActivityDate & TotalSteps & TotalDistance & TrackerDistance &
+LoggedActivitiesDistance & VeryActiveDistance & ModeratelyActiveDistance
+& LightActiveDistance & SedentaryActiveDistance & VeryActiveMinutes &
+FairlyActiveMinutes & LightlyActiveMinutes & SedentaryMinutes &
+Calories\tabularnewline
+\midrule
+\endhead
+1503960366 & 4/12/2016 & 13162 & 8.50 & 8.50 & 0 & 1.88 & 0.55 & 6.06 &
+0 & 25 & 13 & 328 & 728 & 1985\tabularnewline
+1503960366 & 4/13/2016 & 10735 & 6.97 & 6.97 & 0 & 1.57 & 0.69 & 4.71 &
+0 & 21 & 19 & 217 & 776 & 1797\tabularnewline
+1503960366 & 4/14/2016 & 10460 & 6.74 & 6.74 & 0 & 2.44 & 0.40 & 3.91 &
+0 & 30 & 11 & 181 & 1218 & 1776\tabularnewline
+1503960366 & 4/15/2016 & 9762 & 6.28 & 6.28 & 0 & 2.14 & 1.26 & 2.83 & 0
+& 29 & 34 & 209 & 726 & 1745\tabularnewline
+1503960366 & 4/16/2016 & 12669 & 8.16 & 8.16 & 0 & 2.71 & 0.41 & 5.04 &
+0 & 36 & 10 & 221 & 773 & 1863\tabularnewline
+1503960366 & 4/17/2016 & 9705 & 6.48 & 6.48 & 0 & 3.19 & 0.78 & 2.51 & 0
+& 38 & 20 & 164 & 539 & 1728\tabularnewline
+\textbackslash end\{table\} & & & & & & & & & & & & & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+Above we have 3 tables for daily, hourly, minute/second data. These few
+rows are a tiny part of the whole data. Right away one can notice that
+the datasets can be merged by Id, Date and Time. However, some of the
+column names need to change, in order for them to merge. Also, notice
+that, for instance in the second dataset of TABLE 3 the time is based on
+seconds, so it can be converted to minutes and merged with the first
+dataset. Simillarly we can summarize minute into hours or hours into
+days. For that we will need to match the column names and splet the
+column for Date into date and time. Subsequently we will have some
+metadata for each dataset, to see the whole picture. But for now we have
+some clues about how the data looks like.
+
+Since and decided that we should proceed with the anlaysis, despite the
+limitations, we will start the cleaning process. The data cleaning
+strategy
+
+We already mentioned that some users didn't contribute data for all the
+expected times. This means that there might be dispersion in the number
+of minutes the users recorded data. To see the distribution we grouped
+data by unique IDs and computed the number of minutes.
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{}
+
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{} --\textgreater{} --\textgreater{} --\textgreater{}
+--\textgreater{}
+
+\end{document}
