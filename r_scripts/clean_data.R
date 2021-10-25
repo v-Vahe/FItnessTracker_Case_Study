@@ -154,10 +154,9 @@ write.table(duplicates, file = "./CaseStudy_data/duplicates.txt", sep = "\t",
 write.table(sedentary_prc, file = "./CaseStudy_data/sedentary_table.txt", sep = "\t",
             row.names = FALSE)
 # write final datasets
-write.csv(minute_data_merged, "./CaseStudy_data/minute_data_merged.csv")
-write.csv(minute_data_merged1, "./CaseStudy_data/minute_data_merged1.csv")
-write.csv(minute_data_merged2, "./CaseStudy_data/minute_data_merged2.csv")
+write.csv2(minute_data_merged1, "./CaseStudy_data/minute_data_merged1.csv")
+write.csv2(minute_data_merged2, "./CaseStudy_data/minute_data_merged2.csv")
 write.csv2(hourly_data_merged, "./CaseStudy_data/hourly_data_merged.csv")
 write.csv2(daily_data_merged, "./CaseStudy_data/daily_data_merged.csv")
 
-View(minute_data_merged)
+

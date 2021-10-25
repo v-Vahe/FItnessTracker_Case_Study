@@ -16,8 +16,11 @@ library(lubridate)
 # read the datasets
 daily_data_merged = read.csv2(paste('./CaseStudy_data/', "daily_data_merged.csv",sep = ''))[-1]
 hourly_data_merged = read.csv2(paste('./CaseStudy_data/', "hourly_data_merged.csv",sep = ''))[-1]
-minute_data_merged = read.csv2(paste('./CaseStudy_data/', "minute_data_merged.csv",sep = ''))[-1]
+minute_data_merged1 = read.csv2(paste('./CaseStudy_data/', "minute_data_merged1.csv",sep = ''))[-1]
+minute_data_merged2 = read.csv2(paste('./CaseStudy_data/', "minute_data_merged2.csv",sep = ''))[-1]
 
+# combine minute data files
+minute_data_merged <- left_join(minute_data_merged1, minute_data_merged2)
 
 # barplot ------------------------------------------------------------------------------------------------------ 
 
