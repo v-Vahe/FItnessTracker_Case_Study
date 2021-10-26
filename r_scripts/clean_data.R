@@ -94,8 +94,8 @@ daily_data_merged <- dailyActivity_merged %>%
 minutes_usaged <- minute_data_merged %>% 
   group_by(Id) %>% 
   select(Id,Date) %>% 
-  summarise(Usage = n()) %>% 
-  mutate(Usage = if_else(Usage < 40000, "Low", "High"))
+  summarise(MinuteUsage = n()) %>% 
+  mutate(Usage = if_else(MinuteUsage < 40000, "Low", "High"))
 
 
 # add usage groups to the datasets
@@ -123,22 +123,6 @@ minute_data_merged <- minute_data_merged[!duplicated(minute_data_merged), ]
 hourly_data_merged <- hourly_data_merged[!duplicated(hourly_data_merged), ]
 daily_data_merged <- daily_data_merged[!duplicated(daily_data_merged), ]
 
-# Table | Sedentary Minutes ------------------------------------------------------
-sedentary_prc <- daily_data_merged %>% 
-  select(Usage, 
-         VeryActiveMinutes, 
-         FairlyActiveMinutes, 
-         LightlyActiveMinutes, 
-         SedentaryMinutes) %>%
-  mutate(NonSedentary = VeryActiveMinutes + FairlyActiveMinutes + LightlyActiveMinutes) %>%
-  group_by(Usage)  %>%
-  summarize(Sedentary = sum(SedentaryMinutes),
-            NonSedentary = sum(NonSedentary))  %>%
-  mutate(total = Sedentary + NonSedentary,
-         Sedentary = paste0(round(Sedentary / total, 2) * 100, '%'),
-         NonSedentary = paste0(round(NonSedentary / total, 2) * 100, '%')) %>% 
-  select(-total)
-
 
 # Write the results ------------------------------------------------------------------
 
@@ -150,9 +134,6 @@ minute_data_merged2 <- minute_data_merged[,c(1,2,4,3,6,7,8)]
 write.table(duplicates, file = "./CaseStudy_data/duplicates.txt", sep = "\t",
             row.names = FALSE)
 
-# save the tables for sedebtary minures by groups
-write.table(sedentary_prc, file = "./CaseStudy_data/sedentary_table.txt", sep = "\t",
-            row.names = FALSE)
 # write final datasets
 write.csv2(minute_data_merged1, "./CaseStudy_data/minute_data_merged1.csv")
 write.csv2(minute_data_merged2, "./CaseStudy_data/minute_data_merged2.csv")

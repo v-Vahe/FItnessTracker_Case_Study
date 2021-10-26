@@ -80,7 +80,6 @@ kbl(summaries, escape = F) %>%
   column_spec(1, bold = T, border_right = T) %>%
     column_spec(2, width = "30em") 
 ```
-https://slcc.pressbooks.pub/technicalwritingatslcc/chapter/5-writing-the-results-section/
 
 
 
@@ -517,8 +516,6 @@ Insight 3 is clear since the lining up of the time in bed and time asleep indica
 Insight 4 tells us that the users who stay in bed more then they sleep are among the high usage group.
 
 # Discussion
-
-##### Unfortunetly with the data we had, we wouldn't be able to produce accurate insights. 
 
 In this section I will discuss the most important findings and suggestions by this case study. While working on this case study I realized that I could build much stronger analysis and extract more information. However, since the data integrity was violated, it was not worth doing that. With only 33 users and 30-day user data, we wouldn't be able to get the big picture and produce accurate results. There are important variables such as weather within each season or variability of user characteristics, which can not be ignored. After all, the fact that the data is bad makes results of any analysis unreliable. However, even with the limited data we were able to see how relationships betweem variables can be a proper ground for building machiene learning models. We were also able to determine data issues and ways to avoid them. Hence, this analysis can be valuable for the marketing team at BellaBeat, in that they can use it to prioritize their marketing campaigns. That is the marketing team needs to focus on resolving the most important issues related to data. 
 
