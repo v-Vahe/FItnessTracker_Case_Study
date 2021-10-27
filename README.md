@@ -24,7 +24,7 @@ In this case study I am going to analyze data from FitBit users, which is a pers
 3. How could these trends help influence BellaBeat marketing strategy?
 
 ### File structure
-![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg ) 
+![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
 ## Technologies
 ***
 A list of technologies used within the project:
