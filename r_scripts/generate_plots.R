@@ -157,6 +157,7 @@ lineplots1 <- grid.arrange(
   lineplot1[[6]] + theme(legend.position='hidden'), 
   lineplot1[[7]] + theme(legend.position='hidden'),
   get_legend(lineplot1[[1]]),
+  heights =  c(2,2,2,2,2,2,2,2),
   top = textGrob("Figure 2. Averages per minute by days of week \n", gp=gpar(fontsize=18,font=3)),
   nrow = 4
 )
