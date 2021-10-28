@@ -24,6 +24,7 @@ this case study is based on an analysis for BellaBeat digital marketing strategy
 3. How could these trends help influence BellaBeat marketing strategy?
 
 Here are a few screenshot for the preview of the report (These are taken from [BellaBeat_analysis.html](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/BellaBeay_analysis.html) file):
+
 ![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
 ### File structure
 ***
