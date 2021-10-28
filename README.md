@@ -6,7 +6,7 @@
 5. [FAQs](#faqs)
 ### General Info
 ***
-In this case study I am going to analyze data from FitBit users, which is a personal health tracker. The objective is to gain insights from FitBit secondary data, to drive business decisions for another health tracker company called BellaBeat. This data analysis can help guide BellaBeat's marketing strategies, particularly for two of their products Leaf (tracker bracelet) and Time (wellness watch). Some instructions were provided by Google Data Analytics, which is a course on Cursera, developed by Google.
+this case study is based on an analysis using data from FitBit users, which is a personal health tracker. The objective is to gain insights from FitBit secondary data, to drive business decisions for another health tracker company called BellaBeat. This data analysis can help guide BellaBeat's marketing strategies, particularly for two of their products Leaf (tracker bracelet) and Time (wellness watch). Some instructions were provided by Google Data Analytics, which is a course on Cursera, developed by Google.
 
 **Deliverables**
 
@@ -24,16 +24,32 @@ In this case study I am going to analyze data from FitBit users, which is a pers
 3. How could these trends help influence BellaBeat marketing strategy?
 
 ### File structure
+***
+The project files are organized ia a way that is easy to make changes and try knitting. Note that when you knit an rmarkdown document it usually takes a long time to produce all the results from scratch. Hence the dataset manipulations as well as the plot and table generations are done using seperate R scripts and then the results are saved in different folders. Here is the file structure diagram that is helpful in understanding the structure.
 ![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
+
 ## Technologies
 ***
+In case 
 A list of technologies used within the project:
-* [Technology name](https://example.com): Version 12.3 
-* [Technology name](https://example.com): Version 2.34
-* [Library name](https://example.com): Version 1234
-## Installation
+* [R](https://example.com): Version 3.6.3
+* [rmarkdown](https://example.com): Version 2.5 
+* [dplyr](https://example.com): Version 1.0.7  
+* [lubridate](https://example.com): Version 1234
+* [tidyverse](https://example.com): Version 2.34
+* [hms](https://example.com): Version 1234
+* [chron](https://example.com): Version 2.34
+* [ggplot2](https://example.com): Version 3.3.5  
+* [GGally](https://example.com): Version 2.1.2 
+* [reshape2](https://example.com): Version 2.34
+* [grid](https://example.com): Version 3.6.3 
+* [gridExtra](https://example.com): Version 1234
+* [kableExtra](https://example.com): Version 1234
+* [knitr](https://example.com): Version 1.30 
+## Usage
 ***
-A little intro about the installation. 
+
+After
 ```
 $ ```{r, include=FALSE}
 $ # Run sourse code
