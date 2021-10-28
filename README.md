@@ -32,28 +32,57 @@ The project files are organized ia a way that is easy to make changes and try kn
 ![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
 ### Technologies
 ***
-In case 
+The case study was performed using some R packages. Make sure to add the following chunk to [BellaBeat_analysis.Rmd](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/BellaBeay_analysis.Rmd) file) file, and in case you already have some of installed, delete the corresponding rows.
 
-A list of technologies used within the project:
+```{r, include=FALSE}
+$ # Run sourse code
+$ #install.packages('dplyr')
+$ #install.packages('lubridate')
+$ #install.packages('tidyverse')
+$ #install.packages('hms')
+$ #install.packages('chron')
+$ #install.packages('ggplot2') 
+$ #install.packages('GGally')
+$ #install.packages('reshape2')
+$ #install.packages('grid')
+$ #install.packages('gridExtra')
+$ #install.packages('kableExtra')
+$ #install.packages('knitr')
+$ ```
+```
+
+In case of any error regarding the R packages, make sure that you install these versions:
+
+**First make sure to have these R and RStudio versions:**
 * [R](https://example.com): Version 3.6.3
 * [RStudio](https://example.com): Version 1.2.5033
+
+**A list of technologies used within the project:**
 * [rmarkdown](https://example.com): Version 2.5 
 * [dplyr](https://example.com): Version 1.0.7  
-* [lubridate](https://example.com): Version 1234
-* [tidyverse](https://example.com): Version 2.34
-* [hms](https://example.com): Version 1234
-* [chron](https://example.com): Version 2.34
+* [lubridate](https://example.com): Version 1.7.10
+* [tidyverse](https://example.com): Version 1.3.1 
+* [hms](https://example.com): Version 1.1.0 
+* [chron](https://example.com): Version 2.3-56
 * [ggplot2](https://example.com): Version 3.3.5  
 * [GGally](https://example.com): Version 2.1.2 
-* [reshape2](https://example.com): Version 2.34
+* [reshape2](https://example.com): Version 1.4.4
 * [grid](https://example.com): Version 3.6.3 
-* [gridExtra](https://example.com): Version 1234
-* [kableExtra](https://example.com): Version 1234
+* [gridExtra](https://example.com): Version 2.3 
+* [kableExtra](https://example.com): Version 1.3.4
 * [knitr](https://example.com): Version 1.30 
+
+You can run the following line of code in the console to make sure the versions are matching:
+
+```
+$ ```{r, include=FALSE}
+$ sessionInfo()
+$ ```
+```
+
 ### Usage
 ***
-
-After
+After you sort out the packages, make sure that [BellaBeat_analysis.Rmd](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/BellaBeay_analysis.Rmd) runs fine. If there is an error, again make sure to have the right versions. If you still get an error, please let me know.
 ```
 $ ```{r, include=FALSE}
 $ # Run sourse code
