@@ -25,7 +25,7 @@ this case study is based on an analysis for BellaBeat digital marketing strategy
 
 Here are a few screenshot for the preview of the report (These are taken from [BellaBeat_analysis.html](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/BellaBeay_analysis.html) file):
 
-![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
+![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/report_screenshots.jpg) 
 ### File structure
 ***
 The project files are organized ia a way that is easy to make changes and try knitting. Meaning that if someone wants to change up the code or just try to understand, it is easy to do so following the instrucitons here. Note that when you knit an rmarkdown document it usually takes a long time to produce all the results from scratch. Hence the dataset manipulations as well as the plot and table generations are done using seperate R scripts and then the results are saved in different folders. Here is the file structure diagram that is helpful in understanding the structure.
