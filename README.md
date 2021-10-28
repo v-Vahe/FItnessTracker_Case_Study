@@ -6,7 +6,7 @@
 5. [FAQs](#faqs)
 ### General Info
 ***
-this case study is based on an analysis using data from FitBit users, which is a personal health tracker. The objective is to gain insights from FitBit secondary data, to drive business decisions for another health tracker company called BellaBeat. This data analysis can help guide BellaBeat's marketing strategies, particularly for two of their products Leaf (tracker bracelet) and Time (wellness watch). Some instructions were provided by Google Data Analytics, which is a course on Cursera, developed by Google.
+this case study is based on an analysis for BellaBeat digital marketing strategy using data from FitBit users, which are both personal health trackers. The objective is to gain insights from FitBit secondary data, to drive business decisions for another health tracker company called BellaBeat. This data analysis can help guide BellaBeat's marketing strategies, particularly for two of their products Leaf (tracker bracelet) and Time (wellness watch). Some instructions were provided by Google Data Analytics, which is a course on Cursera, developed by Google.
 
 **Deliverables**
 
@@ -22,9 +22,12 @@ this case study is based on an analysis using data from FitBit users, which is a
 1. What are some trends in smart device usage?
 2. How could these trends apply to BellaBeat customers?
 3. How could these trends help influence BellaBeat marketing strategy?
+
+Here are a few screenshot for the preview of the report (These are taken from [BellaBeat_analysis.html](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/BellaBeay_analysis.html) file):
+![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
 ### File structure
 ***
-The project files are organized ia a way that is easy to make changes and try knitting. Note that when you knit an rmarkdown document it usually takes a long time to produce all the results from scratch. Hence the dataset manipulations as well as the plot and table generations are done using seperate R scripts and then the results are saved in different folders. Here is the file structure diagram that is helpful in understanding the structure.
+The project files are organized ia a way that is easy to make changes and try knitting. Meaning that if someone wants to change up the code or just try to understand, it is easy to do so following the instrucitons here. Note that when you knit an rmarkdown document it usually takes a long time to produce all the results from scratch. Hence the dataset manipulations as well as the plot and table generations are done using seperate R scripts and then the results are saved in different folders. Here is the file structure diagram that is helpful in understanding the structure.
 ![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
 ### Technologies
 ***
