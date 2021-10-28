@@ -1,6 +1,6 @@
 ---
 title: "Case Study of BellaBeat Health Tracker"
-subtitle: "Improving Marketing Strategy With"
+subtitle: "Using Second Source Data to Improve Digital Marketing Strategy"
 output:
   html_document:
     df_print: paged
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, include=FALSE}
-## Run sourse code
+# Run sourse code
 # source("./r_scripts/clean_data.R", local = knitr::knit_global())
 # source("./r_scripts/create_metadata.R", local = knitr::knit_global())
 # source("./r_scripts/generate_plots.R", local = knitr::knit_global())
@@ -539,9 +539,11 @@ In the previous section we discussed how the findings from this case study relat
 
 # References
 
-**The analysis and code used here can be found on Github:**
+**The analysis report and code used here can be found at:**
 
-GitHub Repository:
+GitHub Repository: https://github.com/v-Vahe/FItnessTracker_Case_Study
+
+Kaggle: 
 
 **The data privacy information can be found:**
 

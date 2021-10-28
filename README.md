@@ -22,17 +22,17 @@ this case study is based on an analysis using data from FitBit users, which is a
 1. What are some trends in smart device usage?
 2. How could these trends apply to BellaBeat customers?
 3. How could these trends help influence BellaBeat marketing strategy?
-
 ### File structure
 ***
 The project files are organized ia a way that is easy to make changes and try knitting. Note that when you knit an rmarkdown document it usually takes a long time to produce all the results from scratch. Hence the dataset manipulations as well as the plot and table generations are done using seperate R scripts and then the results are saved in different folders. Here is the file structure diagram that is helpful in understanding the structure.
 ![Image text](https://github.com/v-Vahe/FItnessTracker_Case_Study/blob/main/figs/file_structure_diagram.jpg) 
-
-## Technologies
+### Technologies
 ***
 In case 
+
 A list of technologies used within the project:
 * [R](https://example.com): Version 3.6.3
+* [RStudio](https://example.com): Version 1.2.5033
 * [rmarkdown](https://example.com): Version 2.5 
 * [dplyr](https://example.com): Version 1.0.7  
 * [lubridate](https://example.com): Version 1234
@@ -46,7 +46,7 @@ A list of technologies used within the project:
 * [gridExtra](https://example.com): Version 1234
 * [kableExtra](https://example.com): Version 1234
 * [knitr](https://example.com): Version 1.30 
-## Usage
+### Usage
 ***
 
 After
@@ -59,7 +59,7 @@ $ source("./r_scripts/generate_plots.R", local = knitr::knit_global())
 $ ```
 ```
 Side information: To use the application in a special environment use ```lorem ipsum``` to start
-## Collaboration
+### Collaboration
 ***
 Give instructions on how to collaborate with your project.
 > Maybe you want to write a quote in this part. 

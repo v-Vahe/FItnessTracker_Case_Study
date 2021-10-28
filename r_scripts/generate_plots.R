@@ -157,7 +157,7 @@ lineplots1 <- grid.arrange(
   lineplot1[[6]] + theme(legend.position='hidden'), 
   lineplot1[[7]] + theme(legend.position='hidden'),
   get_legend(lineplot1[[1]]),
-  heights =  c(2,2,2,2,2,2,2,2),
+  heights =  c(2,2,2,2),
   top = textGrob("Figure 2. Averages per minute by days of week \n", gp=gpar(fontsize=18,font=3)),
   nrow = 4
 )
@@ -171,6 +171,7 @@ lineplots2 <- grid.arrange(
   lineplot2[[5]] + theme(legend.position='hidden', axis.title.x=element_blank()), 
   lineplot2[[6]] + theme(legend.position='hidden'), 
   lineplot2[[7]] + theme(legend.position='hidden'),
+  heights =  c(2,2,2,2),
   get_legend(lineplot2[[1]]),
   top = textGrob("Figure 3. Averages per minute by days of week \n", gp=gpar(fontsize=18,font=3)),
   bottom = textGrob("Hours from 4:30 to 6:30 \n", gp=gpar(fontsize=8,font=1)),
